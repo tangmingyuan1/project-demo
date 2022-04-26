@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <modules>
+        <module>demo-swagger</module>
+    </modules>
+
+    <!-- springboot版本 -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.7.RELEASE</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.demo</groupId>
+    <artifactId>demo-maven-demo</artifactId>
+    <version>1.00</version>
+    <packaging>pom</packaging><!--父级的pom文件只作项目的子模块的整合，在maven install时不会生成jar/war压缩包。-->
+
+    <!--版本号锁定-->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+        <springboot.version>2.2.7.RELEASE</springboot.version>
+        <druid.version>1.1.21</druid.version>
+        <redis.version>1.4.7.RELEASE</redis.version>
+        <mybatis-plus.version>3.2.0</mybatis-plus.version>
+        <fastjson.version>1.2.79</fastjson.version>
+        <jackson.databind.version>2.10.0</jackson.databind.version>
+        <lombok.version>1.18.10</lombok.version>
+        <pagehelper.version>1.2.10</pagehelper.version>
+        <swagger.version>2.9.2</swagger.version>
+        <easypoi.version>3.2.0</easypoi.version>
+        <commons.pool2.version>2.8.0</commons.pool2.version>
+        <apollo.client.version>1.6.0</apollo.client.version>
+        <minio.version>8.2.0</minio.version>
+        <mysql.version>8.0.20</mysql.version>
+        <jsqlparser.version>1.4</jsqlparser.version>
+        <druid-spring-boot.version>1.1.23</druid-spring-boot.version>
+    </properties>
+
+    <!--版本锁定-->
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- 阿里巴巴数据连接原 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid-spring-boot.version}</version>
+            </dependency>
+
+            <!-- mysql连接 -->
+            <!--MySQL连接java的驱动程序-->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <!--支持通过JDBC连接数据库-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-jdbc</artifactId>
+                <version>${springboot.version}</version>
+            </dependency>
+
+            <!--sql解析工具的jar包-->
+            <dependency>
+                <groupId>com.github.jsqlparser</groupId>
+                <artifactId>jsqlparser</artifactId>
+                <version>${jsqlparser.version}</version>
+            </dependency>
+
+            <!--redis-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-redis</artifactId>
+                <version>${redis.version}</version>
+            </dependency>
+            <!-- rabbitmq -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-amqp</artifactId>
+                <version>${springboot.version}</version>
+            </dependency>
+            <!-- apollo -->
+            <dependency>
+                <groupId>com.ctrip.framework.apollo</groupId>
+                <artifactId>apollo-client</artifactId>
+                <version>${apollo.client.version}</version>
+            </dependency>
+            <!-- minio -->
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>${minio.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-pool2</artifactId>
+                <version>${commons.pool2.version}</version>
+            </dependency>
+
+            <!-- mybatis-plus自动的维护了mybatis以及mybatis-spring的依赖，
+                     在springboot中这三者不能同时的出现，避免版本的冲突，表示：跳进过这个坑 -->
+            <!-- mybatis-plus 3.2.0以上版本需要用到一个扩展包，但是和springboot整合的starter里面还没有，所以需要单独加上一个扩展包，用同版本的扩展包就行了。 -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <!-- // 扩展包 -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-extension</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <!-- pagehelper分页 -->
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper.version}</version>
+            </dependency>
+
+            <!-- json包 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+            <!-- java对象序列化为JSON字符串 -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.databind.version}</version>
+            </dependency>
+
+            <!-- lombok -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <optional>true</optional>
+            </dependency>
+
+            <!--swagger本身不支持spring mvc的，springfox把swagger包装了一下，让他可以支持springmvc-->
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+
+            <!-- 集成easypoi组件 .导出excel http://easypoi.mydoc.io/ -->
+            <dependency>
+                <groupId>cn.afterturn</groupId>
+                <artifactId>easypoi-base</artifactId>
+                <version>${easypoi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.afterturn</groupId>
+                <artifactId>easypoi-web</artifactId>
+                <version>${easypoi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.afterturn</groupId>
+                <artifactId>easypoi-annotation</artifactId>
+                <version>${easypoi.version}</version>
+            </dependency>
+
+
+
+        </dependencies>
+    </dependencyManagement>
+
+</project>

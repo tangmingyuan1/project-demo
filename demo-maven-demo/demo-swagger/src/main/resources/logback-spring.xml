@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <springProperty scop="context" name="application.name" source="spring.application.name" defaultValue=""/>
+    <springProperty scop="context" name="log.path" source="log.path" defaultValue=""/>
+    <property name="application.name" value="${application.name}" />
+    <property name="log.path" value="${log.path}" />
+    <!-- 控制台输出 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度 %msg：日志消息，%n是换行符，异常时取前20行 -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%logger{50}] %file:%line - %msg%n%exception{20}</pattern>
+        </encoder>
+    </appender>
+    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %tid [%thread] %-5level %logger{50} - %msg%n"/>
+    <!-- INFO log output -->
+    <appender name="info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/${application.name}/INFO/%d{yyyy-MM-dd}/%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- 日志文件保留天数 -->
+<!--            <maxHistory>30</maxHistory>-->
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>100</maxHistory>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <pattern>
+                    <pattern>
+                        <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+                        {
+                        "timestamp": "%date{\"yyyy-MM-dd HH:mm:ss.SSS\"}",
+                        "level": "%level",
+                        "thread": "%thread",
+                        "host":"%X{ipAndPort}",
+                        "client":"%X{remoteIp}",
+                        "url": "%X{requestURI}",
+                        "type_1": "${application.name}",
+                        "type_2": "%X{bizType}",
+                        "type_3": "%X{bizModule}",
+                        "message": "%message"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+        <!--过滤器,只打INFO级别的日志-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    <!-- error log output -->
+    <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/${application.name}/ERROR/%d{yyyy-MM-dd}/%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>10000</maxHistory>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <pattern>
+                    <pattern>
+                        {
+                        "timestamp": "%date{\"yyyy-MM-dd HH:mm:ss.SSS\"}",
+                        "level": "%level",
+                        "thread": "%thread",
+                        "host":"%X{ipAndPort}",
+                        "client":"%X{remoteIp}",
+                        "url": "%X{requestURI}",
+                        "type_1": "${application.name}",
+                        "type_2": "%X{bizType}",
+                        "type_3": "%X{bizModule}",
+                        "message": "%message - %exception{20}"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+        <!-- 只打印ERROR日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- debug log output --> <!--debug模式需要时打开-->
+    <!--<appender name="debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/${application.name}/DEBUG/%d{yyyy-MM-dd}/%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>1000</maxHistory>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <pattern>
+                    <pattern>
+                        {
+                        "timestamp": "%date{\"yyyy-MM-dd HH:mm:ss.SSS\"}",
+                        "level": "%level",
+                        "thread": "%thread",
+                        "host":"%X{ipAndPort}",
+                        "client":"%X{remoteIp}",
+                        "url": "%X{requestURI}",
+                        "type_1": "${application.name}",
+                        "type_2": "%X{bizType}",
+                        "type_3": "%X{bizModule}",
+                        "message": "%message - %exception{20}"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+        &lt;!&ndash; 只打印DEBUG日志 &ndash;&gt;
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>-->
+
+    <logger name="org" level="info"/>
+    <root level="INFO">
+        <!--  <appender-ref ref="LOG_STASH_ERROR" /> -->
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="info"/>
+        <appender-ref ref="error"/>
+        <!--        <appender-ref ref="debug"/>--><!--debug模式需要时打开-->
+    </root>
+</configuration>
